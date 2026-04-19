@@ -27,31 +27,22 @@ export default function SalesPage() {
   const selectedProductId = watch('productId')
   const selectedProduct = products.find(p => p.id === Number(selectedProductId))
 
-  useEffect(() => {
-    categoryService.getAll().then(setCategories)
-  }, [])
-
-  useEffect(() => {
-    productService.getAll(filterCat || null).then(setProducts)
-  }, [filterCat])
+  useEffect(() => { categoryService.getAll().then(setCategories) }, [])
+  useEffect(() => { productService.getAll(filterCat || null).then(setProducts) }, [filterCat])
 
   async function onSubmit(data) {
     try {
-      setError('')
-      setSuccess(null)
+      setError(''); setSuccess(null)
       const sale = await saleService.create(data)
-      setSuccess(sale)
-      reset({ productId: '', quantity: 1 })
-    } catch (err) {
-      setError(err.response?.data?.error || 'Erro ao registrar venda')
-    }
+      setSuccess(sale); reset({ productId: '', quantity: 1 })
+    } catch (err) { setError(err.response?.data?.error || 'Erro ao registrar venda') }
   }
 
   return (
     <div className="max-w-lg">
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-zinc-800">Registrar venda</h1>
-        <p className="text-sm text-zinc-500 mt-0.5">Selecione o prato e a quantidade vendida</p>
+        <h1 className="text-lg md:text-xl font-semibold text-zinc-800">Registrar venda</h1>
+        <p className="text-xs md:text-sm text-zinc-500 mt-0.5">Selecione o prato e a quantidade vendida</p>
       </div>
 
       {success && (
@@ -65,61 +56,45 @@ export default function SalesPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-zinc-200 p-6">
+      <div className="bg-white rounded-xl border border-zinc-200 p-4 md:p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-zinc-700">Filtrar por categoria</label>
-            <select
-              value={filterCat}
-              onChange={e => setFilterCat(e.target.value)}
-              className="border border-zinc-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400">
+            <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
+              className="w-full border border-zinc-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-400">
               <option value="">Todas as categorias</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
+              {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
             </select>
           </div>
 
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-zinc-700">Prato</label>
             <select {...register('productId')}
-              className={`border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400
+              className={`w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-400
                 ${errors.productId ? 'border-red-400' : 'border-zinc-300'}`}>
               <option value="">Selecione o prato...</option>
               {products.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.name} — R$ {Number(p.price).toFixed(2)}
-                </option>
+                <option key={p.id} value={p.id}>{p.name} — R$ {Number(p.price).toFixed(2)}</option>
               ))}
             </select>
-            {errors.productId && (
-              <span className="text-xs text-red-500">{errors.productId.message}</span>
-            )}
+            {errors.productId && <span className="text-xs text-red-500">{errors.productId.message}</span>}
           </div>
 
           {selectedProduct && (
             <div className="bg-zinc-50 rounded-lg p-3 text-sm text-zinc-600 border border-zinc-100">
               <p className="font-medium text-zinc-700 mb-1">Ficha técnica</p>
               {selectedProduct.ingredients.map(i => (
-                <p key={i.ingredientId}>
-                  {i.ingredientName} — {i.quantity} {i.unit}
-                </p>
+                <p key={i.ingredientId}>{i.ingredientName} — {i.quantity} {i.unit}</p>
               ))}
             </div>
           )}
 
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-zinc-700">Quantidade</label>
-            <input
-              type="number" min="1"
-              {...register('quantity')}
-              className={`border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400
-                ${errors.quantity ? 'border-red-400' : 'border-zinc-300'}`}
-            />
-            {errors.quantity && (
-              <span className="text-xs text-red-500">{errors.quantity.message}</span>
-            )}
+            <input type="number" min="1" {...register('quantity')}
+              className={`w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-400
+                ${errors.quantity ? 'border-red-400' : 'border-zinc-300'}`}/>
+            {errors.quantity && <span className="text-xs text-red-500">{errors.quantity.message}</span>}
           </div>
 
           {selectedProduct && (
@@ -131,9 +106,7 @@ export default function SalesPage() {
             </div>
           )}
 
-          {error && (
-            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Registrando...' : 'Registrar venda'}
