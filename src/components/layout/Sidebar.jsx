@@ -16,7 +16,7 @@ export default function Sidebar() {
     <>
       <aside className="hidden md:flex w-56 min-h-screen bg-zinc-900 flex-col flex-shrink-0">
         <div className="px-6 py-6 border-b border-zinc-700">
-          <h1 className="text-white font-bold text-lg leading-tight">Vai de Massas</h1>
+          <h1 className="text-white font-bold text-lg leading-tight">Vaidmassas</h1>
           <p className="text-zinc-400 text-xs mt-1">Gestão do delivery</p>
         </div>
         <nav className="flex flex-col gap-1 p-3 flex-1">
